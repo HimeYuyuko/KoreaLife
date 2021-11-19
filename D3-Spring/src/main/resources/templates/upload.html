@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>K Upload</title>
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- 샘플 페이지 동작을 위한 파일입니다. -->
+    <link th:href="@{/raonkuploadB/css/sample.common.css}" rel="stylesheet" />    
+    <script th:src="@{/raonkuploadB/vender/jquery-1.9.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{/raonkuploadB/js/sample.common.js}" type="text/javascript"></script>
+    <!-- <script th:src="@{/handler/raonkhandler.jsp}" type="text/javascript"></script>-->
+    <!-- 샘플 페이지 동작을 위한 파일입니다. -->
+
+    <script th:src="@{/raonkuploadB/js/raonkupload.js}" type="text/javascript"></script>
+    <script type="text/javascript">
+        var G_UploadID;
+        var tempPath = location.href;
+    	tokenPath = tempPath.substring(tempPath.lastIndexOf('/'));
+        // 생성완료 이벤트
+        function RAONKUPLOAD_CreationComplete(uploadID) {
+            G_UploadID = uploadID;
+
+            var logBox = document.getElementById("logBox");
+            logBox.innerHTML = '업로드 생성 완료 : ' + uploadID + '<br/>';
+        }
+
+        // 전송 전 이벤트
+        function RAONKUPLOAD_BeforeUpload(uploadID) {
+            G_UploadID = uploadID;
+
+            var logBox = document.getElementById("logBox");
+            logBox.innerHTML += '업로드 시작 : ' + uploadID + '<br/>';
+        }
+
+        // 전송완료 이벤트
+        function RAONKUPLOAD_UploadComplete(uploadID) {
+            G_UploadID = uploadID;
+
+            var logBox = document.getElementById("logBox");
+
+
+            // 파일에 대한 정보 중 업로드가 완료된 파일의 정보(업로드 된 파일경로,업로드 된 파일명)는
+            // RAONKUPLOAD_UploadComplete 이벤트 안에서만 추출이 가능합니다.
+            var dataJson = RAONKUPLOAD.GetListInfo('json', uploadID);
+
+            // 신규 업로드된 파일
+            var jsonNew = dataJson.newFile;
+            jsonNew.token = tokenPath;
+            if (jsonNew) fn_newJsonToString(jsonNew);
+			
+			var jsonobj = JSON.stringify(jsonNew);
+			console.log("신규 업로드된 파일:" + jsonobj);
+            // 삭제된 파일
+            var jsonDel = dataJson.deleteFile;
+            if (jsonDel) fn_delJsonToString(jsonDel);
+			
+            logBox.innerHTML += '<br/>' + '업로드 완료 : ' + G_UploadID + '<br/>';
+        }
+
+        // 오류 이벤트
+        function RAONKUPLOAD_OnError(uploadID, paramObj) {
+            var logBox = document.getElementById("logBox");
+            logBox.innerHTML += 'Error : ' + paramObj.strCode + ', ' + paramObj.strMessage + '<br/>';
+
+            if (paramObj.arrUploadedFileList != null && paramObj.arrUploadedFileList != '') {
+                logBox.innerHTML += '업로드 된 파일 리스트 - <br/>';
+                var uploadedFileLen = paramObj.arrUploadedFileList.length;
+                for (var i = 0; i < uploadedFileLen; i++) {
+                    logBox.innerHTML += paramObj.arrUploadedFileList[i].uploadName + ', ' + paramObj.arrUploadedFileList[i].uploadPath + '</br>';
+                }
+            }
+        }
+
+        // 취소 이벤트
+        function RAONKUPLOAD_UploadingCancel(uploadID, paramObj) {
+            G_UploadID = uploadID;
+
+            var logBox = document.getElementById("logBox");
+            logBox.innerHTML += '전송 취소 이벤트 : ' + G_UploadID + '<br/>';
+
+            if (paramObj.arrUploadedFileList != null && paramObj.arrUploadedFileList != '') {
+                logBox.innerHTML += '업로드 된 파일 리스트 - <br/>';
+                var uploadedFileLen = paramObj.arrUploadedFileList.length;
+                for (var i = 0; i < uploadedFileLen; i++) {
+                    logBox.innerHTML += paramObj.arrUploadedFileList[i].uploadName + ', ' + paramObj.arrUploadedFileList[i].uploadPath + '</br>';
+                }
+            }
+        }
+    </script>
+    
+</head>
+<body style="text-align:center;">
+    <div style="width: 800px; margin: 0 auto;">
+        <script th:inline="javascript" type="text/javascript">
+       	var tempPath = location.href;
+        tempPath = tempPath.substring(0, tempPath.lastIndexOf('/'));
+       	tempPath = tempPath + "/handler";
+            var uploadConfig = {
+                Id: "kupload",
+                HandlerUrl: tempPath
+
+            };
+            var upload = new RAONKUpload(uploadConfig);
+        </script>
+</div>
+ <br /><br />
+
+    <!-- 로그영역 -->
+    <div id="logBox" class="logBox" style="display:none;"></div>
+</body>
+</html>

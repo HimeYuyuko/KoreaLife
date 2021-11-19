@@ -169,7 +169,6 @@ function fn_newJsonToString(jsonNew) {
 	var logBox = document.getElementById("logBox");
 	logBox.innerHTML += str;
 	var sjson = JSON.stringify(jsonNew);
-	console.log(sjson);
 	$(document).ajaxStart(function() {
 		console.log("Ajax Start");
 	});

@@ -88,21 +88,25 @@ public class HomeController {
 	public ResponseEntity<FileNameInfo> save(HttpServletRequest req, String data) throws ParseException {
 		// System.out.println(str+" dd");
 		// 특수문자 제거
-		String match = "[^a-zA-Z0-9ㄱ-힣-=,._ ]";
+		String match = "[^a-zA-Z0-9ㄱ-힣/:-=,._ ]";
+		String tmatch = "[^a-zA-Z0-9ㄱ-힣:-=,._ ]";
 		JSONParser parser = new JSONParser();
 		Object obj = parser.parse(data);
 		JSONObject jsonObj = (JSONObject) obj;
 		Object obname = jsonObj.get("originalName");
 		Object size = jsonObj.get("size");
 		Object token = jsonObj.get("token");
+		Object upath = jsonObj.get("uploadPath");
 		String sname = String.valueOf(obname);
 		String ssize = String.valueOf(size);
 		String stoken = String.valueOf(token);
+		String supath = String.valueOf(upath);
 		ssize = ssize.replaceAll(match, "");
 		sname = sname.replaceAll(match, "");
-		stoken = stoken.replaceAll(match,"");
+		stoken = stoken.replaceAll(tmatch,"");
+		supath = supath.replaceAll(match,"");
 		System.out.println("STring 토큰 " +stoken);
-		final FileNameInfo member = FileNameInfo.builder().title(sname).size(ssize).token(stoken).build();
+		final FileNameInfo member = FileNameInfo.builder().title(sname).size(ssize).token(stoken).pathroot(supath).build();
 		System.out.println(member);
 		return new ResponseEntity<FileNameInfo>(fileService.save(member), HttpStatus.OK);
 

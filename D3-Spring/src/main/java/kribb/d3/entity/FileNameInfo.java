@@ -24,12 +24,14 @@ public class FileNameInfo {
      private String size;
 	@Column(nullable = false)
 	 private String token;
-    
+    @Column(nullable = false)
+    private String pathroot;
 	@Builder
-    public FileNameInfo(Long fnum, String title, String size, String token) {
+    public FileNameInfo(Long fnum, String title, String size, String token , String pathroot) {
     	this.title = title;
     	this.size = size;
     	this.token = token;
+    	this.pathroot = pathroot;
     }
 
 }

@@ -153,7 +153,7 @@ function fn_newJsonToString(jsonNew) {
 	var customValue = jsonNew.customValue;
 	var responseCustomValue = jsonNew.responseCustomValue;
 	var order = jsonNew.order;
-
+	console.log(uploadPath);
 	str = str.replace('{0}', originalName);
 	str = str.replace('{1}', uploadName);
 	str = str.replace('{2}', isLargeFile);

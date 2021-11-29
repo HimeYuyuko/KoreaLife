@@ -88,8 +88,7 @@ public class HomeController {
 	public ResponseEntity<FileNameInfo> save(HttpServletRequest req, String data) throws ParseException {
 		// System.out.println(str+" dd");
 		// 특수문자 제거
-		String match = "[^a-zA-Z0-9ㄱ-힣/:-=,._ ]";
-		String tmatch = "[^a-zA-Z0-9ㄱ-힣:-=,._ ]";
+		String match = "[^a-zA-Z0-9/,. _ ]";
 		JSONParser parser = new JSONParser();
 		Object obj = parser.parse(data);
 		JSONObject jsonObj = (JSONObject) obj;
@@ -97,17 +96,27 @@ public class HomeController {
 		Object size = jsonObj.get("size");
 		Object token = jsonObj.get("token");
 		Object upath = jsonObj.get("uploadPath");
-		String sname = String.valueOf(obname);
+		String sname = String.valueOf(obname);	
 		String ssize = String.valueOf(size);
 		String stoken = String.valueOf(token);
 		String supath = String.valueOf(upath);
+		ArrayList list = new ArrayList();
 		ssize = ssize.replaceAll(match, "");
 		sname = sname.replaceAll(match, "");
-		stoken = stoken.replaceAll(tmatch,"");
-		supath = supath.replaceAll(match,"");
-		System.out.println("STring 토큰 " +stoken);
-		final FileNameInfo member = FileNameInfo.builder().title(sname).size(ssize).token(stoken).pathroot(supath).build();
-		System.out.println(member);
+		supath = supath.replaceAll(match, "");
+		String snstr[] = sname.split(",");
+		String sistr[] = ssize.split(",");
+		String tostr[] = stoken.split(",");
+		String upstr[] = supath.split(",");
+		List<String> lname = new ArrayList<String>();
+		lname = Arrays.asList(snstr);
+		final FileNameInfo member = FileNameInfo
+				.builder()
+				.title(sname)
+				.size(ssize)
+				.token(stoken)
+				.pathroot(supath)
+				.build();
 		return new ResponseEntity<FileNameInfo>(fileService.save(member), HttpStatus.OK);
 
 	}
@@ -328,18 +337,20 @@ public class HomeController {
 
 		// 해당 설정은 PhysicalPath를 RAONK Upload 제품폴더\raonkuploaddata\ 를 저장 Root 경로로 설정하는
 		// 내용입니다.
-		/*String strPathChar = com.raonwiz.kupload.util.StaticVariables.strPathChar;
-		String strRootFolder = request.getServletPath();
-		strRootFolder = strRootFolder.substring(0, strRootFolder.lastIndexOf("/"));
-		strRootFolder = request.getSession().getServletContext()
-				.getRealPath(strRootFolder.substring(0, strRootFolder.lastIndexOf("/")));*/
+		/*
+		 * String strPathChar = com.raonwiz.kupload.util.StaticVariables.strPathChar;
+		 * String strRootFolder = request.getServletPath(); strRootFolder =
+		 * strRootFolder.substring(0, strRootFolder.lastIndexOf("/")); strRootFolder =
+		 * request.getSession().getServletContext()
+		 * .getRealPath(strRootFolder.substring(0, strRootFolder.lastIndexOf("/")));
+		 */
 		upload.settingVo.setPhysicalPath("D:\\kupload\\raonkuploaddata");
 
 		// 임시파일 물리적 경로설정 ( setPhysicalPath에 설정된 경로 + raonktemp )
 		upload.settingVo.setTempPath("D:\\kupload\\raonkuploaddata\\raonktemp");
 
 		// ***************보안 설정 : 업로드 가능한 경로 설정 - 이외의 경로로 업로드 불가능***************
-		String[] arrAllowUploadDirectoryPath = {"D:\\kupload\\raonkuploaddata"};
+		String[] arrAllowUploadDirectoryPath = { "D:\\kupload\\raonkuploaddata" };
 		upload.settingVo.setAllowUploadDirectoryPath(arrAllowUploadDirectoryPath);
 
 		// ***************보안 설정 : 다운로드 가능한 경로 설정 - 이외의 경로에서 다운로드 불가능***************
@@ -347,26 +358,31 @@ public class HomeController {
 		String[] arrAllowDownloadDirectoryPath = { "D:\\kupload\\raonkuploaddata",
 				request.getSession().getServletContext().getRealPath("/") };
 		upload.settingVo.setAllowDownloadDirectoryPath(arrAllowDownloadDirectoryPath);
-		
+
 		// -------------------- [설정방법1] 물리적 경로 설정 끝 --------------------//
 
 		// -------------------- [설정방법2] 가상경로 설정 시작 ---------------------//
 
-		/*upload.settingVo.setVirtualPath("/");
-
-		// 임시파일 물리적 경로설정 ( setVirtualPath에 설정된 경로 + raonktemp )
-		upload.settingVo.setTempPath(
-				request.getSession().getServletContext().getRealPath("/") + java.io.File.separator + "raonktemp");
-
-		// ***************보안 설정 : 업로드 가능한 경로 설정 - 이외의 경로로 업로드 불가능***************
-		String[] arrAllowUploadDirectoryPath = { request.getSession().getServletContext().getRealPath("/") };
-		upload.settingVo.setAllowUploadDirectoryPath(arrAllowUploadDirectoryPath);
-
-		// ***************보안 설정 : 다운로드 가능한 경로 설정 - 이외의 경로에서 다운로드 불가능***************
-		// context.Request.MapPath("/") 값은 샘플 동작을 위한 설정으로 실제 적용 시 제외하시면 됩니다.
-		String[] arrAllowDownloadDirectoryPath = { request.getSession().getServletContext().getRealPath("/") };
-		upload.settingVo.setAllowDownloadDirectoryPath(arrAllowDownloadDirectoryPath);
-		*/
+		/*
+		 * upload.settingVo.setVirtualPath("/");
+		 * 
+		 * // 임시파일 물리적 경로설정 ( setVirtualPath에 설정된 경로 + raonktemp )
+		 * upload.settingVo.setTempPath(
+		 * request.getSession().getServletContext().getRealPath("/") +
+		 * java.io.File.separator + "raonktemp");
+		 * 
+		 * // ***************보안 설정 : 업로드 가능한 경로 설정 - 이외의 경로로 업로드 불가능***************
+		 * String[] arrAllowUploadDirectoryPath = {
+		 * request.getSession().getServletContext().getRealPath("/") };
+		 * upload.settingVo.setAllowUploadDirectoryPath(arrAllowUploadDirectoryPath);
+		 * 
+		 * // ***************보안 설정 : 다운로드 가능한 경로 설정 - 이외의 경로에서 다운로드 불가능***************
+		 * // context.Request.MapPath("/") 값은 샘플 동작을 위한 설정으로 실제 적용 시 제외하시면 됩니다. String[]
+		 * arrAllowDownloadDirectoryPath = {
+		 * request.getSession().getServletContext().getRealPath("/") };
+		 * upload.settingVo.setAllowDownloadDirectoryPath(arrAllowDownloadDirectoryPath)
+		 * ;
+		 */
 		// -------------------- [설정방법2] 가상경로 설정 끝 --------------------//
 
 		// 위에 설정된 임시파일 물리적 경로에 불필요한 파일을 삭제 처리하는 설정 (단위: 일)

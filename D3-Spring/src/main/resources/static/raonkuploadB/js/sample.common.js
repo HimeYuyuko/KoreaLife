@@ -153,7 +153,7 @@ function fn_newJsonToString(jsonNew) {
 	var customValue = jsonNew.customValue;
 	var responseCustomValue = jsonNew.responseCustomValue;
 	var order = jsonNew.order;
-	console.log(uploadPath);
+	
 	str = str.replace('{0}', originalName);
 	str = str.replace('{1}', uploadName);
 	str = str.replace('{2}', isLargeFile);
@@ -165,7 +165,6 @@ function fn_newJsonToString(jsonNew) {
 	str = str.replace('{8}', customValue);
 	str = str.replace('{9}', responseCustomValue);
 	str = str.replace('{10}', order);
-
 	var logBox = document.getElementById("logBox");
 	logBox.innerHTML += str;
 	var sjson = JSON.stringify(jsonNew);

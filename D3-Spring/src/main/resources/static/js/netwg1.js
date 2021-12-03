@@ -128,7 +128,7 @@ var graph = {
 		{ source: 5, target: 3, labelT: 'Final Calc', labelS: 'Eligibility', type: 'Next -->>' }
 	]
 };
-console.log("dataset is ...", graph.nodes);
+console.log("dataset is ...", graph.links);
 
 //문서 상단 데이터 리스트 출력용
 var Array_sort = document.getElementById('NodesArray');

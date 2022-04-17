@@ -1,3 +1,4 @@
 # KoreaLife
+Spring 기반 빅데이터 시각화 시스템
 
-https://www.figma.com/file/09PPO045uhMih7hlH9gCEw/BikeProject?node-id=0%3A1
+본인 담당-network 및 upload 파트
